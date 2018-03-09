@@ -10,7 +10,8 @@
 (use 'compojure.core)
 
 (defroutes main-routes
-  (GET "/" [] (generate-show-html-from-database-result (take 10 (get-all-country)))))
+  (GET "/" [] (generate-show-html-from-database-result (take 10 (get-all-country))))
+  (GET "/country" [] (get-country-html)))
 
 
 (def app
