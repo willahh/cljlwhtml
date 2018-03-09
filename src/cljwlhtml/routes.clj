@@ -1,6 +1,6 @@
 (ns cljwlhtml.routes
   (:use compojure.core
-        compojure.example.views
+        cljwlhtml.core
         [hiccup.middleware :only (wrap-base-url)])
   (:require [compojure.route :as route]
             [compojure.handler :as handler]
@@ -10,7 +10,7 @@
 (use 'compojure.core)
 
 (defroutes main-routes
-  (GET "/" [] "ok"))
+  (GET "/" [] (generate-show-html-from-database-result (take 10 (get-all-country)))))
 
 
 (def app

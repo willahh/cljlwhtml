@@ -14,18 +14,18 @@
   (jdbc/query db-spec "select * from country"))
 
 (defn generate-show-html-from-database-result [database-result]
-  (html [:table {:class "showTable"}
+  (html [:table {:class "showTable" :border "1"} 
          [:thead
           [:tr
            [:th "id"]
            [:th "payscode"]
-           [:td "payslibelle"]]]
+           [:th "payslibelle"]]]
          [:tbody
-          [:tr
-           (for [row database-result]
-             (html
+          (for [row database-result]
+            (html
+             [:tr
               [:td (get row :id)]
               [:td (get row :payscode)]
-              [:td (get row :payslibelle)]))]]]))
+              [:td (get row :payslibelle)]]))]]))
 
 (generate-show-html-from-database-result (take 10 (get-all-country)))

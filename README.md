@@ -1,14 +1,11 @@
-# test
+# Cljlwhtml
 
-A Clojure library designed to ... well, that part is up to you.
 
 ## Usage
+lein deps
+lein clean
+lein ring server
 
-FIXME
+visit http://localhost:3000/
 
 ## License
-
-Copyright © 2018 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
