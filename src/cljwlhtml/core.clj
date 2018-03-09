@@ -30,7 +30,7 @@
          [:a {:class "btn btn-light" :href prev-params} "Prev"]
          [:a {:class "btn btn-light" :href next-params} "Next"]]))
 
-(defn header []
+(defn get-html-header []
   (html "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\">"
         "<script src=\"https://code.jquery.com/jquery-3.2.1.slim.min.js\"></script>"
         "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js\"></script>"
@@ -53,81 +53,23 @@
      [:h1 "Home"]
      (navigation)]]))
 
-;; country
-
-(defn get-country-html [page limit]
-  (def rows (get-country :page (read-string page) :limit (read-string limit)))
-  (html 
-   "<!DOCTYPE html>"
-   [:html
-    [:head
-     (header)]
-    [:body
-     [:h1 "Country"]
-     (navigation)
-     [:table {:class "listTable" :border "1"} 
-      [:thead
-       [:tr
-        [:th "id"]
-        [:th "payscode"]
-        [:th "payslibelle"]
-        [:th "action"]]]
-      [:tbody
-       (for [row rows]
-         (html
-          [:tr
-           [:td (get row :id)]
-           [:td (get row :payscode)]
-           [:td (get row :payslibelle)]
-           [:td [:div
-                 [:a  {:class "btn btn-light" :href (clojure.string/join ["country/show?id=" (get row :id)])} "s"]
-                 [:button {:class "btn btn-light" :onclick "ok"} "e"]
-                 [:button {:class "btn btn-light" :onclick "ok"} "d"]]]]))]]]]   
-   (paginate page limit)))
-
-
-
-
-
-
-
-
-
-
-
 (defn get-html-template-a [& {:keys [html-head html-body-head html-body]}]
   (html 
    "<!DOCTYPE html>"
    [:html
     [:head (if html-head html-head)]
     [:body
-     (if html-body-head html-body-head)
-     (if html-body html-body)]]))
+     [:div {:class "row"}
+      [:div {:class "col-sm-6"}
+       (if html-body-head html-body-head)]
+      [:div {:class "col-sm-6"}
+       (if html-body html-body)]]]]))
 
-(defn get-country-show-html [id & {:keys [head]}]
-  (def row (first (get-country-one (read-string id))))
-  (def html-body-head (html [:h1 "Country detail"]
-                            (navigation)))
-  (def html-body (html 
-                  [:table {:class "showTable" :border "1"} 
-                   [:tbody
-                    [:tr
-                     [:td "id"]
-                     [:td (get row :id)]]
-                    [:tr
-                     [:td "payscode"]
-                     [:td (get row :payscode)]]
-                    [:tr
-                     [:td "payslibelle"]
-                     [:td (get row :payslibelle)]]]]))
-  (if head
-    (get-html-template-a :html-body html-body :html-body-head html-body-head)
-    (get-html-template-a :html-body html-body)))
-
-(defn get-country-list-html [page limit & {:keys [head]}]
+(defn get-country-list-html [page limit & {:keys [header head]}]
   (def rows (get-country :page (read-string page) :limit (read-string limit)))
   (def html-body-head (html [:h1 "Country list"]
                             (navigation)))
+  (def html-head (if header (get-html-header)))
   (def html-body (html
                   [:table {:class "listTable" :border "1"} 
                    [:thead
@@ -144,17 +86,46 @@
                         [:td (get row :payscode)]
                         [:td (get row :payslibelle)]
                         [:td [:div
-                              [:a  {:class "btn btn-light" :href (clojure.string/join ["country/show?id=" (get row :id)])} "s"]
-                              [:button {:class "btn btn-light" :onclick "ok"} "e"]
-                              [:button {:class "btn btn-light" :onclick "ok"} "d"]]]]))]]                  
+                              [:a  {:class "btn btn-light" :href (clojure.string/join ["/country/show?id=" (get row :id) "&page=" page "&limit=" limit])} "s"]
+                              " "
+                              [:a {:class "btn btn-light" :onclick "ok"} "e"]
+                              " "
+                              [:a {:class "btn btn-light" :onclick "ok"} "d"]]]]))]]                  
                   ))
+  
+  (get-html-template-a :html-head html-head :html-body html-body :html-body-head html-body-head))
+
+
+(defn get-country-html [page limit]
+  (html (get-country-list-html page limit :head true :header true)
+        (paginate page limit)))
+
+(defn get-country-show-html [id & {:keys [head header]}]
+  (def row (first (get-country-one (read-string id))))
+  (def html-body-head (html [:h1 "Country detail"]))
+  (def html-body (html 
+                  [:table {:class "showTable" :border "1"} 
+                   [:tbody
+                    [:tr
+                     [:td "id"]
+                     [:td (get row :id)]]
+                    [:tr
+                     [:td "payscode"]
+                     [:td (get row :payscode)]]
+                    [:tr
+                     [:td "payslibelle"]
+                     [:td (get row :payslibelle)]]]]))
   (if head
     (get-html-template-a :html-body html-body :html-body-head html-body-head)
     (get-html-template-a :html-body html-body)))
 
 (defn get-country-preview [params]
-  (let [page (:page (:params params))
-        limit (:limit (:params params))
-        id "1"]
-    (html (get-country-list-html page limit :head true)
-          (get-country-show-html id :head false))))
+  (let [{:keys [page limit id]} (:params params)]
+    (cond (and (some? page) (some? id))
+          (html (get-country-list-html page limit :head true :header true)
+                (paginate page limit)
+                (get-country-show-html id :head true))
+          (some? id) (html (get-country-show-html id :head true :header true))
+          (some? page) (html (get-country-list-html page limit :head true :header true)
+                             (paginate page limit)))))
+

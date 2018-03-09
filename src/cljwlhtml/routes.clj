@@ -11,12 +11,8 @@
 
 (defroutes main-routes
   (GET "/" [] (generate-show-html-from-database-result (take 10 (get-all-country))))
-  (GET "/country" [page limit] (get-country-html page limit))
-  (GET "/country/show" [id] (get-country-show-html id))
-  ;; (GET "/countrypreview" {{:keys [page limit]}} (get-country-preview page limit))
-  ;; (GET "/countrypreview" [page limit id] (get-country-preview page limit id))
-  (GET "/countrypreview" params (get-country-preview params)))
-
+  (GET "/country" params (get-country-preview params))
+  (GET "/country/show" params (get-country-preview params)))
 
 (def app
   (-> (handler/site main-routes)
