@@ -11,7 +11,8 @@
 
 (defroutes main-routes
   (GET "/" [] (generate-show-html-from-database-result (take 10 (get-all-country))))
-  (GET "/country" [] (get-country-html)))
+  (GET "/country" [page limit] (get-country-html page limit))
+  (GET "/country2" [page limit] (get-country-html page limit)))
 
 
 (def app

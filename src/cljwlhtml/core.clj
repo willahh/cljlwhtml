@@ -4,6 +4,9 @@
 
 (use 'hiccup.core)
 
+(def default-page 1)
+(def default-limit 10)
+
 (def db-name "resources/databases/wlhtml.db")
 (def db-spec {:classname "org.sqlite.JDBC"
               :subprotocol "sqlite"
@@ -11,6 +14,11 @@
 
 (defn get-all-country []
   (jdbc/query db-spec "select * from country"))
+
+(defn get-country [& [page limit]]
+  (let [page (if page page default-page)
+        limit (if limit limit default-limit)]
+    (jdbc/query db-spec (clojure.string/join ["select * from `country` limit " limit " offset " page]))))
 
 
 (defn paginate []
@@ -24,6 +32,13 @@
         "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js\"></script>"
         "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js\"></script>"))
 
+(defn navigation []
+  (html [:div "Nav"
+         [:ul
+          [:li [:a {:href "/"} "/"]]
+          [:li [:a {:href "/country?page=1&limit=5"} "/country"]]
+          [:li [:a {:href "/country2"} "/country2"]]]]))
+
 (defn generate-show-html-from-database-result [database-result]
   (html 
    "<!DOCTYPE html>"
@@ -31,6 +46,8 @@
     [:head
      (header)]
     [:body
+     [:h1 "/"]
+     (navigation)
      [:table {:class "showTable" :border "1"} 
       [:thead
        [:tr
@@ -55,14 +72,20 @@
 
 
 
-(defn get-country-html []
-  (def test2 (take 10 (get-all-country)))
+
+;; country
+
+(defn get-country-html [page limit]
+  (def rows (get-country (read-string page) (read-string limit)))
+  
   (html 
    "<!DOCTYPE html>"
    [:html
     [:head
      (header)]
     [:body
+     [:h1 "Country"]
+     (navigation)
      [:table {:class "showTable" :border "1"} 
       [:thead
        [:tr
@@ -70,8 +93,7 @@
         [:th "payscode"]
         [:th "payslibelle"]]]
       [:tbody
-       ;; (for [row (generate-show-html-from-database-result (take 5 (get-all-country)))]
-       (for [row test2]
+       (for [row rows]
          (html
           [:tr
            [:td (get row :id)]
