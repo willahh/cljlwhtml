@@ -9,3 +9,5 @@ pom.xml.asc
 /.nrepl-port
 .hgignore
 .hg/
+/resources/databases/adminer.php
+/resources/databases/index.php

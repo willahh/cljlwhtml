@@ -152,8 +152,6 @@
     (get-html-template-a :html-body html-body :html-body-head html-body-head)
     (get-html-template-a :html-body html-body)))
 
-
-
 (defn get-country-preview [params]
   (let [page (:page (:params params))
         limit (:limit (:params params))
