@@ -28,5 +28,4 @@
               [:td (get row :payscode)]
               [:td (get row :payslibelle)]))]]]))
 
-
-(generate-show-html-from-database-result (take 10(get-all-country)))
+(generate-show-html-from-database-result (take 10 (get-all-country)))

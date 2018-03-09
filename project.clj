@@ -6,4 +6,8 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/java.jdbc "0.3.5"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
-                 [hiccup "1.0.5"]])
+                 [hiccup "1.0.5"]
+                 [hiccup "1.0.5"]
+                 [compojure "1.6.0"]]
+  :plugins [[lein-ring "0.7.1"]]
+  :ring {:handler cljwlhtml.routes/app})
