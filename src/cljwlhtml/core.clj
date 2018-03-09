@@ -2,6 +2,7 @@
   (:require [clojure.java.jdbc :refer :all :as jdbc]
             [clojure.string :refer [lower-case]]))
 
+
 (use 'hiccup.core)
 
 (def default-page 1)
@@ -15,11 +16,13 @@
 (defn get-all-country []
   (jdbc/query db-spec "select * from country"))
 
-(defn get-country [& [page limit]]
-  (let [page (if page page default-page)
-        limit (if limit limit default-limit)]
-    (jdbc/query db-spec (clojure.string/join ["select * from `country` limit " limit " offset " page]))))
+;; (defn get-country [& [page limit]]
+;;   (let [page (if page page default-page)
+;;         limit (if limit limit default-limit)]
+;;     (jdbc/query db-spec (clojure.string/join ["select * from `country` limit " limit " offset " page]))))
 
+(defn get-country [& {:keys [page limit] :or {page default-page limit default-limit}}]
+  (jdbc/query db-spec (clojure.string/join ["select * from `country` limit " limit " offset " page])))
 
 (defn paginate []
   (html [:div {:style "margin: 10px;"}
@@ -46,37 +49,14 @@
     [:head
      (header)]
     [:body
-     [:h1 "/"]
-     (navigation)
-     [:table {:class "showTable" :border "1"} 
-      [:thead
-       [:tr
-        [:th "id"]
-        [:th "payscode"]
-        [:th "payslibelle"]]]
-      [:tbody
-       (for [row database-result]
-         (html
-          [:tr
-           [:td (get row :id)]
-           [:td (get row :payscode)]
-           [:td (get row :payslibelle)]]))]]]]   
-   (paginate)))
-
-(generate-show-html-from-database-result (take 10 (get-all-country)))
-
-
-
-
-
-
-
-
+     [:h1 "Home"]
+     (navigation)]]))
 
 ;; country
 
-(defn get-country-html [page limit]
-  (def rows (get-country (read-string page) (read-string limit)))
+(defn get-country-html [& page limit]
+  (printl "yo")
+  (def rows (get-country :page (read-string page) :limit (read-string limit)))
   
   (html 
    "<!DOCTYPE html>"

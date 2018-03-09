@@ -5,9 +5,9 @@
 - lein deps
 - lein clean
 - lein ring server
-- visit http://localhost:3000/
+- Visit http://localhost:3000/
 
 ## Database administration
-    - visit http://localhost/cljlwhtml/resources/databases (apache + php)
+    - Visit http://localhost/cljlwhtml/resources/databases (apache + php)
 
 ## License
