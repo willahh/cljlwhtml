@@ -10,9 +10,6 @@
               :subprotocol "sqlite"
               :subname db-name})
 
-;; (defn get-all-country []
-;;   (jdbc/query db-spec "select * from country"))
-
 (defn get-country-one [id]
   (jdbc/query db-spec (clojure.string/join ["select * from country where id = " id])))
 

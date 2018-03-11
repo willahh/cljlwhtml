@@ -49,10 +49,6 @@
         "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js\"></script>"))
 
 
-
-(defn get-home-html []
-  (get-html-template-a :html-head (get-html-header) :html-body "Home page"))
-
 (defn get-html-template-a [& {:keys [html-head html-body-head html-body]}]
   (html 
    "<!DOCTYPE html>"
@@ -65,6 +61,11 @@
        (if html-body-head html-body-head)]
       [:div {:class "col-sm-6"}
        (if html-body html-body)]]]]))
+
+(defn get-home-html []
+  (get-html-template-a :html-head (get-html-header) :html-body "Home page"))
+
+
 
 (defn get-country-list-html [page limit & {:keys [header head]}]
   (def rows (get-country :page (read-string page) :limit (read-string limit)))
