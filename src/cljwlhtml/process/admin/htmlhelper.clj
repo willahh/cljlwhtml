@@ -31,14 +31,39 @@
         "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js\"></script>"))
 
 
-(defn get-page-header-html [& id]
-  (html [:div
-         [:h3 "Language"]]
-        [:div 
-         [:a {:class "btn btn-light" :href "./language"} "List"]
-         [:a {:class "btn btn-light" :href "?mode=insert"} "Add new"]
-         [:a {:class "btn btn-light" :href (clojure.string/join ["?mode=update&id=" id])} "Update"]
-         [:a {:class "btn btn-light" :href (clojure.string/join ["?mode=show&id=" id])} "Show"]]))
+(defn get-action-link [record action]
+  (let [id (:id record)]    
+    (cond (= action "show")
+          (clojure.string/join ["?mode=show&id=" id])
+
+          (= action "insert")
+          (clojure.string/join ["?mode=insert"])
+
+          (= action "update")
+          (clojure.string/join ["?mode=update&id=" id])
+
+          (= action "delete")
+          (clojure.string/join ["?mode=delete&id=" id]))))
+
+(defn get-page-header-html 
+  ([]
+   (html [:div
+          [:h3 "Language"]]
+         [:div 
+          [:a {:class "btn btn-light" :href "./language"} "List"]]))
+
+  ([record]
+   (html [:div
+          [:h3 "Language"]]
+         [:div 
+          [:a {:class "btn btn-light" :href "./language"} "List"]
+          (when (some? record)
+            [:a {:class "btn btn-light" :href (get-action-link record "insert")} "Add new"]
+            [:a {:class "btn btn-light" :href (get-action-link record "update")} "Update"]
+            [:a {:class "btn btn-light" :href (get-action-link record "show")} "Show"])])))
+
+
+
 
 (defn get-html [html]
   (get-html-template-a :html-head (get-html-header) :html-body html))
@@ -67,3 +92,9 @@
       ;; List
       :else
       {:mode "list"})))
+
+(defn get-action-html [record]
+  (html [:div {:class "action"}
+         [:a {:href (get-action-link record "show") :class "btn"} "Show"]
+         [:a {:href (get-action-link record "update") :class "btn"} "Edit"]
+         [:a {:href (get-action-link record "delete") :class "btn"} "Delete"]]))

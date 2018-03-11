@@ -119,15 +119,15 @@
                                            (get-page-list-html))))
 
           (= (:mode page-param) "update")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html id)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
                                            (get-show-or-insert-or-update-html page-param))))
 
           (= (:mode page-param) "insert")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html id)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
                                            (get-show-or-insert-or-update-html page-param))))
 
           (= (:mode page-param) "show")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html id)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
                                            (get-show-or-insert-or-update-html page-param))))))  )
 
 ;; Some test

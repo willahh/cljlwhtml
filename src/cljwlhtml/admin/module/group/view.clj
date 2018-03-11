@@ -28,7 +28,7 @@
 (defn get-show-or-insert-or-update-html [page-param]
   (let [mode (:mode page-param)
         id (:id (:params page-param))
-        columns (groupModel/columns)
+        columns groupModel/columns
         record (groupModel/get-row id)
         submit-line [:tr
                      [:td {:colspan "2" :style "text-align: center;"}
@@ -55,13 +55,15 @@
          [:thead
           [:tr
            (for [column columns]          
-             [:th column])]]
+             [:th column])
+           [:th "actions"]]]
          [:tbody
           (for [record records]          
             [:tr
              (for [column columns]
                [:td ((keyword column) record)]
-               [:td (get-field-html record column)])])]]))
+               [:td (get-field-html record column)])
+             [:td (htmlhelper/get-action-html record)]])]]))
 
 (defn get-html []
   (def records (groupModel/get-paginate :page 0 :limit 10))
@@ -84,13 +86,22 @@
                                            (get-page-list-html))))
 
           (= (:mode page-param) "update")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html id)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
                                            (get-show-or-insert-or-update-html page-param))))
 
           (= (:mode page-param) "insert")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html id)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
                                            (get-show-or-insert-or-update-html page-param))))
 
           (= (:mode page-param) "show")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html id)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
                                            (get-show-or-insert-or-update-html page-param)))))))
+
+
+;; test
+(def record (first (groupModel/get-paginate :page 0 :limit 10)))
+
+(htmlhelper/get-action-link (first (groupModel/get-paginate :page 0 :limit 10)) "update")
+(htmlhelper/get-page-header-html (first (groupModel/get-paginate :page 0 :limit 10)))
+(htmlhelper/get-page-header-html {:id 1, :user-id 1, :name "Groupe a"})
+(get-show-or-insert-or-update-html {:mode "show", :params {:id 1}})
