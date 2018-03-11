@@ -9,11 +9,14 @@
   (map (fn [a]
          (name (first a))) row))
 
-(defn get-page-header-html []
+(defn get-page-header-html [& id]
   (html [:div
          [:h3 "Language"]]
         [:div 
-         [:a {:class "btn btn-light" :href "?mode=insert"} "Add new"]]))
+         [:a {:class "btn btn-light" :href "./language"} "List"]
+         [:a {:class "btn btn-light" :href "?mode=insert"} "Add new"]
+         [:a {:class "btn btn-light" :href (clojure.string/join ["?mode=update&id=" id])} "Update"]
+         [:a {:class "btn btn-light" :href (clojure.string/join ["?mode=show&id=" id])} "Show"]]))
 
 (defn get-show-html [row]
   (def columns (get-column-name-from-record row))
@@ -25,14 +28,15 @@
              [:td ((keyword column) row)]])]]))
 
 (defn get-field-html [mode record column]
-  (cond (= mode "show")
-        (html ((keyword column) record))
-        
-        (= mode "update")
-        (html "<input value\"ok\">")
+  (let [value ((keyword column) record)]
+    (cond (= mode "show")
+          (html value)
+          
+          (= mode "update")
+          (html clojure.string/join ["<input value=\"" value "\""]>)
 
-        (= mode "insert")
-        (html "<input>")))
+          (= mode "insert")
+          (html "<input>"))))
 
 (defn get-show-or-insert-or-update-html [page-param]
   (let [mode (:mode page-param)
@@ -53,7 +57,6 @@
                (when (or (= mode "insert") (= mode "update")) submit-line)
                ]]]
     (html (if (or (= mode "insert") (= mode "update"))
-            ;; [:h3 (print-str mode)]
             [:form body]
             body))))
 
@@ -113,26 +116,32 @@
       {:mode "list"})))
 
 
-(defn get-view [params]
-  (def page-param (get-page-param-from-route-param params))
-  (cond (= (:mode page-param) "list")
-        (html (htmlhelper/get-html (get-page-list-html)))
+(defn get-view [route-param]
+  (def page-param (get-page-param-from-route-param route-param))
+  
+  (let [mode (:mode page-param)
+        id (:id (:params page-param))
+        columns ["locale" "group" "key" "value"]
+        record (first frfr/locales)]
+    (cond (= (:mode page-param) "list")
+          (html (htmlhelper/get-html (html (get-page-header-html)
+                                           (get-page-list-html))))
 
-        (= (:mode page-param) "update")
-        (html (htmlhelper/get-html (html (get-page-header-html)
-                                         (get-show-or-insert-or-update-html page-param))))
+          (= (:mode page-param) "update")
+          (html (htmlhelper/get-html (html (get-page-header-html id)
+                                           (get-show-or-insert-or-update-html page-param))))
 
-        (= (:mode page-param) "insert")
-        (html (htmlhelper/get-html (html (get-page-header-html)
-                                         (get-show-or-insert-or-update-html page-param))))
+          (= (:mode page-param) "insert")
+          (html (htmlhelper/get-html (html (get-page-header-html id)
+                                           (get-show-or-insert-or-update-html page-param))))
 
-        (= (:mode page-param) "show")
-        (html (htmlhelper/get-html (html (get-page-header-html)
-                                         (get-show-or-insert-or-update-html page-param))))))
+          (= (:mode page-param) "show")
+          (html (htmlhelper/get-html (html (get-page-header-html id)
+                                           (get-show-or-insert-or-update-html page-param))))))  )
 
-
-
-
+;; Some test
 (get-show-or-insert-or-update-html {:mode "list"})
 (get-show-or-insert-or-update-html {:mode "show"
                                     :params {:id 1}})
+
+;; (get-view {:params {:mode "show" "id" "1"}})
