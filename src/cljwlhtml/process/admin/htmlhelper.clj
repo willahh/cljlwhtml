@@ -46,21 +46,21 @@
           (clojure.string/join ["?mode=delete&id=" id]))))
 
 (defn get-page-header-html 
-  ([]
+  ([module-configuration]
    (html [:div
-          [:h3 "Language"]]
+          [:h3 (:label module-configuration)]]
          [:div 
           [:a {:class "btn btn-light" :href "./language"} "List"]]))
 
-  ([record]
+  ([module-configuration record]
    (html [:div
-          [:h3 "Language"]]
+          [:h3 (:label module-configuration)]]
          [:div 
           [:a {:class "btn btn-light" :href "./language"} "List"]
           (when (some? record)
-            [:a {:class "btn btn-light" :href (get-action-link record "insert")} "Add new"]
-            [:a {:class "btn btn-light" :href (get-action-link record "update")} "Update"]
-            [:a {:class "btn btn-light" :href (get-action-link record "show")} "Show"])])))
+            (html [:a {:class "btn btn-light" :href (get-action-link record "insert")} "Add new"]
+                  [:a {:class "btn btn-light" :href (get-action-link record "update")} "Update"]
+                  [:a {:class "btn btn-light" :href (get-action-link record "show")} "Show"]))])))
 
 (defn get-field-html [mode record column]
   (let [value ((keyword column) (first record))]

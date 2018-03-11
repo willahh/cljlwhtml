@@ -4,6 +4,8 @@
             [cljwlhtml.model.group :as groupModel]
             [cljwlhtml.locales.frfr :as frfr]))
 
+;; TODO - Definir un vrai objet avec description etc
+(def module-configuration {:name "group" :label "User group"})
 
 (defn get-show-html [record]
   (def columns (htmlhelper/get-column-name-from-record record))
@@ -49,15 +51,6 @@
                [:td (htmlhelper/get-field-html record column)])
              [:td (htmlhelper/get-action-html record)]])]]))
 
-;; (defn get-html []
-;;   (def records (groupModel/get-paginate :page 0 :limit 10))
-;;   (def record (first records))
-;;   (def columns groupModel/columns)
-
-;;   (html (htmlhelper/get-page-header-html)
-;;         (get-page-list-html records columns)
-;;         (get-show-html record)))
-
 (defn get-view [route-param]
   (def page-param (htmlhelper/get-page-param-from-route-param route-param))
   
@@ -68,39 +61,39 @@
     (cond (= (:mode page-param) "list")
           (html (htmlhelper/get-html (let [records (groupModel/get-paginate :page 0 :limit 10)
                                            columns groupModel/columns]
-                                       (html (htmlhelper/get-page-header-html)
+                                       (html (htmlhelper/get-page-header-html module-configuration)
                                              (get-page-list-html records columns)
                                              (htmlhelper/get-page-list-options-html)))))
 
           (= (:mode page-param) "update")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html module-configuration record)
                                            (get-show-or-insert-or-update-html page-param))))
 
           (= (:mode page-param) "insert")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html module-configuration record)
                                            (get-show-or-insert-or-update-html page-param))))
 
           (= (:mode page-param) "show")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html module-configuration record)
                                            (get-show-or-insert-or-update-html page-param)))))))
 
 
 ;; ;; test
-(def column "id")
-(def record (first (groupModel/get-paginate :page 0 :limit 10)))
+;; (def column "id")
+;; (def record (first (groupModel/get-paginate :page 0 :limit 10)))
 
 ;; (htmlhelper/get-action-link (first (groupModel/get-paginate :page 0 :limit 10)) "update")
 ;; (htmlhelper/get-page-header-html (first (groupModel/get-paginate :page 0 :limit 10)))
 ;; (htmlhelper/get-page-header-html {:id 1, :user-id 1, :name "Groupe a"})
 ;; (get-show-or-insert-or-update-html {:mode "show", :params {:id 1}})
 
-(htmlhelper/get-field-html "update" record column)
+;; (htmlhelper/get-field-html "update" record column)
 
 
 
 
-(let [records (groupModel/get-paginate :page 0 :limit 10)
-      columns groupModel/columns]
-  (htmlhelper/get-page-header-html)
-  (get-page-list-html records columns)
-  (htmlhelper/get-page-list-options-html))
+;; (let [records (groupModel/get-paginate :page 0 :limit 10)
+;;       columns groupModel/columns]
+;;   (htmlhelper/get-page-header-html)
+;;   (get-page-list-html records columns)
+;;   (htmlhelper/get-page-list-options-html))

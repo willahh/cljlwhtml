@@ -4,6 +4,8 @@
             [cljwlhtml.model.user :as userModel]
             [cljwlhtml.locales.frfr :as frfr]))
 
+(def module-configuration {:name "language" :label "Language"})
+
 
 (defn get-column-name-from-record [row]
   (map (fn [a]
@@ -67,14 +69,14 @@
                [:td ((keyword column) record)]
                [:td (get-field-html record column)])])]]))
 
-(defn get-html []
-  (def records frfr/locales)
-  (def row (first frfr/locales))
-  (def columns ["locale" "group" "key" "value"])
-  
-  (html (htmlhelper/get-page-header-html)
-        (get-page-list-html records columns)
-        (get-show-html row)))
+;; (defn get-html []
+;;   (def records frfr/locales)
+;;   (def row (first frfr/locales))
+;;   (def columns ["locale" "group" "key" "value"])
+
+;;   (html (htmlhelper/get-page-header-html)
+;;         (get-page-list-html records columns)
+;;         (get-show-html row)))
 
 (defn get-page-param-from-route-param [params]
   "Get an Arraymap of mode and paramters from a route params
@@ -115,19 +117,19 @@
         columns ["locale" "group" "key" "value"]
         record (first frfr/locales)]
     (cond (= (:mode page-param) "list")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html module-configuration)
                                            (get-page-list-html))))
 
           (= (:mode page-param) "update")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html module-configuration record)
                                            (get-show-or-insert-or-update-html page-param))))
 
           (= (:mode page-param) "insert")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html module-configuration record)
                                            (get-show-or-insert-or-update-html page-param))))
 
           (= (:mode page-param) "show")
-          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html record)
+          (html (htmlhelper/get-html (html (htmlhelper/get-page-header-html module-configuration record)
                                            (get-show-or-insert-or-update-html page-param))))))  )
 
 ;; Some test
