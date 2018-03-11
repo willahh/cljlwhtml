@@ -62,8 +62,17 @@
             [:a {:class "btn btn-light" :href (get-action-link record "update")} "Update"]
             [:a {:class "btn btn-light" :href (get-action-link record "show")} "Show"])])))
 
+(defn get-field-html [mode record column]
+  (let [value ((keyword column) (first record))]
+    (cond (= mode "show")
+          (html value)
+          
+          (= mode "update")
+          (html (clojure.string/join ["<input value=\"" value "\">"]))
+          
 
-
+          (= mode "insert")
+          (html "<input>"))))
 
 (defn get-html [html]
   (get-html-template-a :html-head (get-html-header) :html-body html))
@@ -98,3 +107,19 @@
          [:a {:href (get-action-link record "show") :class "btn"} "Show"]
          [:a {:href (get-action-link record "update") :class "btn"} "Edit"]
          [:a {:href (get-action-link record "delete") :class "btn"} "Delete"]]))
+
+
+(defn get-page-list-options-html []
+  (html [:div {:class "option"}
+         "Pagination - Select all - Selection action - Import - Export - Show as json"]))
+
+(defn get-submit-line-html [record]
+  (html [:tr
+         [:td {:colspan "2" :style "text-align: center;"}
+          [:div
+           [:input {:type "submit" :class "btn btn-primary"}]
+           [:input {:type "reset" :value "Annuler" :class "btn" :onclick "window.history.back();"}]]]]))
+
+
+(defn get-show-navigation [record]
+  (html [:div "show nav"]))
