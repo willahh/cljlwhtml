@@ -50,7 +50,8 @@
    (html [:div
           [:h3 (:label module-configuration)]]
          [:div 
-          [:a {:class "btn btn-light" :href "./language"} "List"]]))
+          [:a {:class "btn btn-light" :href "./language"} "List"]
+          [:a {:class "btn btn-light" :href (get-action-link nil "insert")} "Add new"]]))
 
   ([module-configuration record]
    (html [:div
