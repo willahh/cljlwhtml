@@ -4,15 +4,15 @@
         [hiccup.middleware :only (wrap-base-url)])
   (:require [compojure.route :as route]
             [compojure.handler :as handler]
-            [compojure.response :as response]))
+            [compojure.response :as response]
+            [cljwlhtml.admin.module.user.view]
+            [cljwlhtml.core :as core]))
 
-
-(use 'compojure.core)
-
-(defroutes main-routes
-  (GET "/" [] (generate-show-html-from-database-result (take 10 (get-all-country))))
-  (GET "/country" params (get-country-preview params))
-  (GET "/country/show" params (get-country-preview params)))
+(def main-routes
+  (compojure.core/routes
+   (GET "/" [] (core/get-home-html))
+   (GET "/country" params (core/get-country-preview params))
+   (GET "/admin/module/user" params (cljwlhtml.admin.module.user.view/get-view params))))
 
 (def app
   (-> (handler/site main-routes)
