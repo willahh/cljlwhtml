@@ -64,12 +64,13 @@
                   [:a {:class "btn btn-light" :href (get-action-link record "show")} "Show"]))])))
 
 (defn get-field-html [mode record column]
-  (let [value ((keyword column) (first record))]
+  (let [field-name column
+        field-value ((keyword column) (first record))]
     (cond (= mode "show")
-          (html value)
+          (html field-value)
           
           (= mode "update")
-          (html (clojure.string/join ["<input value=\"" value "\">"]))
+          (html (clojure.string/join ["<input name=\"" field-name "\" value=\"" field-value "\">"]))
           
 
           (= mode "insert")
@@ -112,7 +113,8 @@
 
 (defn get-page-list-options-html []
   (html [:div {:class "option"}
-         "Pagination - Select all - Selection action - Import - Export - Show as json"]))
+         ;; "Pagination - Select all - Selection action - Import - Export - Show as json"
+         ]))
 
 (defn get-submit-line-html [record]
   (html [:tr

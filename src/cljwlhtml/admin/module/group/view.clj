@@ -7,14 +7,6 @@
 ;; TODO - Definir un vrai objet avec description etc
 (def module-configuration {:name "group" :label "User group"})
 
-(defn get-show-html [record]
-  (def columns (htmlhelper/get-column-name-from-record record))
-  (html [:table {:class "table showTable" :style "border: 1px solid #000; width: auto;"}
-         [:tbody
-          (for [column columns]
-            [:tr
-             [:td {:width 50} column]
-             [:td ((keyword column) record)]])]]))
 
 (defn get-show-or-insert-or-update-html [page-param]
   (let [mode (:mode page-param)
@@ -31,7 +23,7 @@
                (when (or (= mode "insert") (= mode "update")) submit-line)
                ]]]
     (html (if (or (= mode "insert") (= mode "update"))
-            [:form body]
+            [:form {:method "post" :action "save"} body]
             (html body
                   (htmlhelper/get-show-navigation record))))))
 
